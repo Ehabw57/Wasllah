@@ -30,7 +30,7 @@ const handleMessage = (client, server, raw) => {
   try {
     data = JSON.parse(raw);
   } catch (e) {
-    console.log(e)
+    console.log(e);
     return;
   }
 

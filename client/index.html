@@ -6,11 +6,88 @@
   <body>
     <h1>connected Devices:</h1>
     <div id="devices"></div>
+    <input type="file" id="fileInput" />
     <script>
+      const fileInput = document.getElementById("fileInput");
+      fileInput.onchange = (event) => {
+        const file = event.target.files[0];
+        if (file) {
+          sendFile(file);
+        }
+      };
       const socket = new WebSocket("ws://localhost:3000");
       const devicesDiv = document.getElementById("devices");
       const pc = new RTCPeerConnection();
+      let fileMeta = null;
+      let receivedBuffers = [];
+      let receivedSize = 0;
+
       let dataChannel = null;
+
+      function waitForBuffer() {
+        return new Promise((resolve) => {
+          dataChannel.onbufferedamountlow = resolve;
+        });
+      }
+
+      function download(blob, filename) {
+        const a = document.createElement("a");
+        a.href = URL.createObjectURL(blob);
+        a.download = filename;
+        a.click();
+      }
+
+      function onMessage(event) {
+        if (typeof event.data === "string") {
+          const msg = JSON.parse(event.data);
+
+          if (msg.type === "meta") {
+            fileMeta = msg;
+            receivedBuffers = [];
+            receivedSize = 0;
+          }
+
+          if (msg.type === "end") {
+            const blob = new Blob(receivedBuffers);
+            download(blob, fileMeta.name);
+          }
+
+          return;
+        }
+
+        receivedBuffers.push(event.data);
+        receivedSize += event.data.byteLength;
+
+        console.log(`Received ${(receivedSize/fileMeta.size * 100).toFixed(2)}%`);
+      }
+
+      async function sendFile(file) {
+        if (dataChannel && dataChannel.readyState === "open") {
+          dataChannel.binaryType = "arraybuffer";
+          dataChannel.send(
+            JSON.stringify({
+              type: "meta",
+              id: Date.now(),
+              name: file.name,
+              size: file.size,
+            }),
+          );
+          let offset = 0;
+          buffer = await file.arrayBuffer();
+          while (offset < buffer.byteLength) {
+            if (dataChannel.bufferedAmount > 16 * 1024) {
+              console.log(`Sending ${(offset / buffer.byteLength * 100).toFixed(2)}%`);
+              await waitForBuffer();
+            }
+            const chunk = buffer.slice(offset, offset + 16 * 1024);
+            dataChannel.send(chunk);
+            offset += 16 * 1024;
+          }
+          dataChannel.send(JSON.stringify({ type: "end" }));
+        } else {
+          console.log("Data channel is not open");
+        }
+      }
       pc.onconnectionstatechange = () => {
         console.log("Connection state:", pc.connectionState);
       };
@@ -18,8 +95,8 @@
       // Handle incoming data channels (answers side)
       pc.ondatachannel = (event) => {
         dataChannel = event.channel;
-        dataChannel.onopen = () => console.log('Data channel opened');
-        dataChannel.onmessage = (ev) => console.log('Data channel message:', ev.data);
+        dataChannel.onopen = () => console.log("Data channel opened");
+        dataChannel.onmessage = onMessage;
       };
 
       pc.onicecandidate = (event) => {
@@ -36,26 +113,25 @@
 
       function sendData(data) {
         console.log("Sending data:", data);
-        if (dataChannel && dataChannel.readyState === 'open') {
+        if (dataChannel && dataChannel.readyState === "open") {
           dataChannel.send(data);
         } else {
-          console.log('Data channel is not open');
+          console.log("Data channel is not open");
         }
       }
 
       async function sendOffer(targetId) {
         pc.peerId = targetId;
 
-        dataChannel = pc.createDataChannel('data');
-        dataChannel.onopen = () => console.log('Data channel open');
-        dataChannel.onmessage = (e) => console.log('Data channel message:', e.data);
-
+        dataChannel = pc.createDataChannel("data");
+        dataChannel.onopen = () => console.log("Data channel open");
+        dataChannel.onmessage = onMessage;
         const offer = await pc.createOffer();
         await pc.setLocalDescription(offer);
 
         socket.send(
           JSON.stringify({
-            type: 'offer',
+            type: "offer",
             offer: pc.localDescription,
             targetId,
           }),
@@ -82,7 +158,8 @@
         if (data.type === "connection") {
           const device = document.createElement("div");
           device.id = data.id;
-          device.textContent = `Device: ${data.name} (ID: ${data.id}, Origin: ${data.origin})`;
+          const content = `<div>${data.name}:${data.origin}<button onclick="sendOffer('${data.id}')">Connect</button><button onclick="sendData('${data.id}')">Send Data</button></div>`;
+          device.innerHTML = content;
           devicesDiv.appendChild(device);
         }
 
@@ -94,7 +171,7 @@
           }
         }
         if (data.type === "offer") {
-          pc.peerId = data.from
+          pc.peerId = data.from;
           pc.setRemoteDescription(data.offer);
           pc.createAnswer().then((answer) => {
             pc.setLocalDescription(answer);
@@ -105,11 +182,11 @@
         }
 
         if (data.type === "answer") {
-          pc.peerId = data.from
+          pc.peerId = data.from;
           pc.setRemoteDescription(data.answer);
         }
 
-        if (data.type === 'ice-candidate') {
+        if (data.type === "ice-candidate") {
           pc.addIceCandidate(data.candidate);
         }
       };
