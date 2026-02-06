@@ -16,6 +16,7 @@
   ],
   "author": "",
   "dependencies": {
+    "dotenv": "^17.2.4",
     "nodemon": "^3.1.11",
     "uuid": "^13.0.0",
     "ws": "^8.16.0"

@@ -1,25 +1,14 @@
-const { WebSocketServer } = require("ws");
-const { v4: uuid4 } = require("uuid");
-const {sendToClients} = require('./signals')
+const { WebSocketServer } = require('ws');
+const dotenv = require('dotenv');
+const { handleConnection } = require('./handlers/connection.handler');
 
-const wss = new WebSocketServer({ host: "localhost", port: 3000 });
+dotenv.config();
 
-wss.on("connection", (ws, req) => {
-  ws.origin = req.headers["origin"];
-  ws.id = uuid4();
+const host = process.env.WS_HOST || 'localhost';
+const port = Number(process.env.WS_PORT) || 3000;
 
-  ws.on("message", (msg) => {
-    const data = JSON.parse(msg);
+const wss = new WebSocketServer({ host, port });
 
-    if (data.type == "auth") {
-      sendToClients(ws, wss, data)
-    }
-  });
+wss.on('connection', (ws, req) => handleConnection(ws, req, wss));
 
-  ws.on("close", () => {
-    wss.clients.forEach((c) => {
-      c.send(JSON.stringify({ type: "disconnection", id: ws.id }));
-    });
-  });
-});
-
+console.log(`WebSocket server running on ws://${host}:${port}`);
