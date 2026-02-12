@@ -4,7 +4,7 @@ const { handleConnection } = require('./handlers/connection.handler');
 
 dotenv.config();
 
-const host = process.env.WS_HOST || 'localhost';
+const host = process.env.WS_HOST || '0.0.0.0';
 const port = Number(process.env.WS_PORT) || 3000;
 
 const wss = new WebSocketServer({ host, port });
