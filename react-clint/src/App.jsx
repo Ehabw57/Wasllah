@@ -1,6 +1,7 @@
 import { useState } from "react";
-import  DeviceList  from "./components/DeviceCard";
+import DeviceList from "./components/DeviceCard";
 import Searching from "./components/Searching";
+import { FileInput } from "./components/FileInput";
 
 function App() {
   const [connected, setConnected] = useState(false);
@@ -15,8 +16,9 @@ function App() {
   return (
     <>
       <h1>{connected ? "متصل" : "غير متصل"}</h1>
-      <Searching />
-      <DeviceList />
+      {/* <Searching />
+      <DeviceList /> */}
+      <FileInput onFile={(file) => console.log("Received file:", file)}  />
     </>
   );
 }
