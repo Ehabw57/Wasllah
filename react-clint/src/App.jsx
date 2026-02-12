@@ -1,11 +1,12 @@
 import { useState } from "react";
-import DeviceList from "./components/DeviceCard";
-import Searching from "./components/Searching";
 import { FileInput } from "./components/FileInput";
-import { TransferCard } from "./components/TransferCard";
+import { DiscoveryPage } from "./pages/DiscoveryPage";
+import { TransferPage } from "./pages/TransferPage";
 
 function App() {
   const [connected, setConnected] = useState(false);
+  const connectedDevice = { name: "Xiaomi C67", platform: "Android" };
+
   const devices = [
     { id: 1, name: "Xiaomi C67", platform: "Android" },
     { id: 2, name: "iPhone 12", platform: "iOS" },
@@ -15,6 +16,14 @@ function App() {
   ];
 
   const transfers = [
+    {
+      id: 0,
+      progress: 80,
+      name: "file0.zip",
+      size: "20 MB",
+      status: "in_progress",
+      direction: "send",
+    },
     {
       id: 1,
       name: "file1.jpg",
@@ -47,15 +56,28 @@ function App() {
   ];
 
   return (
-    <>
-      <h1>{connected ? "متصل" : "غير متصل"}</h1>
-      {/* <Searching />
-      <DeviceList /> 
-      <FileInput onFile={(file) => console.log("Received file:", file)}  /> */}
-      {transfers.map((t) => (
-        <TransferCard key={t.id} transfer={t} />
-      ))}
-    </>
+    <div className="min-h-screen bg-gray-50 p-3" dir="rtl">
+      <button onClick={() => setConnected((prev) => !prev)}>
+        {connected ? "Disconnect" : "Connect"}
+      </button>
+      {!connected ? (
+        <DiscoveryPage devices={devices} onConnect={(device) => console.log(device)} />
+      ) : (
+        <TransferPage
+          connectedDevice={connectedDevice}
+          transfers={transfers}
+          onSendFile={(file) => {
+            console.log("send file", file);
+          }}
+          onDisconnect={() => {
+            console.log("disconnect");
+          }}
+          onClearCompleted={() => {
+            console.log("clear completed");
+          }}
+        />
+      )}
+    </div>
   );
 }
 
