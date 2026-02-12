@@ -1,9 +1,47 @@
-import { FaMobileAlt } from "react-icons/fa";
-export function DeviceCard({ device, onConnect }) {
+import { FaMobileAlt, FaDesktop } from "react-icons/fa";
+import { MdOutlineDevices } from "react-icons/md";
+
+export default function DeviceList({ devices = [], onConnect }) {
+  return (
+    <>
+      {/* Devices Grid */}
+      {devices.length === 0 ? (
+        <div className="text-center py-12 text-gray-400">
+          <MdOutlineDevices size={50} className="mx-auto mb-4" />
+          <p>لا توجد أجهزة متاحة</p>
+          <p className="text-sm mt-2">
+            تأكد من أن الأجهزة الأخرى متصلة بنفس الشبكة
+          </p>
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          {devices.map((device) => (
+            <DeviceCard key={device.id} device={device} onConnect={onConnect} />
+          ))}
+        </div>
+      )}
+    </>
+  );
+}
+
+function DeviceCard({ device, onConnect }) {
+  switch (device.platform) {
+    case "Android":
+    case "iOS":
+      device.icon = <FaMobileAlt size={20} className="text-gray-500" />;
+      break;
+    case "Windows":
+    case "macOS":
+    case "Linux":
+      device.icon = <FaDesktop size={20} className="text-gray-500" />;
+      break;
+    default:
+      device.icon = <MdOutlineDevices size={20} className="text-gray-500" />;
+  }
   return (
     <div className=" bg-white rounded-xl px-4 py-6 shadow-sm flex items-center justify-start">
       <div className="w-15 h-15 bg-gray-100 rounded-lg flex items-center justify-center">
-        <FaMobileAlt className="text-gray-500" size={20} />
+        {device.icon}
       </div>
       <div className="mr-4">
         <h4 className="text-md font-bold text-gray-800">{device.name}</h4>

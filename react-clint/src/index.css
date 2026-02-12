@@ -1,1 +1,16 @@
-@import 'tailwindcss'
+@import "tailwindcss";
+
+@theme {
+  @keyframes ping {
+    from {
+      border-width: 1px;
+      transform: scale(1);
+      opacity: 1;
+    }
+    to {
+      border-width: 0px;
+      transform: scale(4);
+      opacity: 0;
+    }
+  }
+}
