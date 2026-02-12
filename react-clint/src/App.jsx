@@ -1,13 +1,11 @@
 import { useState } from 'react'
+import { DeviceCard } from './components/DeviceCard'
 
 function App() {
   const [connected, setConnected] = useState(false)
 
   return (
-    <button onClick={() => setConnected(!connected)}
-    className='px-4 py-2 bg-amber-400'>
-      {connected ? 'Disconnect' : 'Connect'}
-    </button>
+    <DeviceCard device={{ name: 'Xiaomi C67', platform: 'Android' }} onConnect={() => setConnected(true)} />
   )
 }
 
