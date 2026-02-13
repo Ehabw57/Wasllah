@@ -18,13 +18,13 @@ export function useWasslah() {
   const addTransfer = useCallback((id, name, size, direction) => {
     setTransfers((prev) => [
       ...prev,
-      { id, name, size, progress: 0, status: "active", direction },
+      { id, name, size, progress: 0, status: "active", direction, transferred: 0 },
     ]);
   }, []);
 
-  const updateProgress = useCallback((id, progress) => {
+  const updateProgress = useCallback((id, progress, transferred) => {
     setTransfers((prev) =>
-      prev.map((t) => (t.id === id ? { ...t, progress } : t)),
+      prev.map((t) => (t.id === id ? { ...t, progress, transferred } : t)),
     );
   }, []);
 
@@ -120,7 +120,7 @@ export function useWasslah() {
             ("[progress]: Starting new transfer for", recived);
             addTransfer(id, name, size, "receive");
           } else {
-            updateProgress(id, Math.round((recived / size) * 100));
+            updateProgress(id, Math.round((recived / size) * 100), recived);
           }
         },
         (metadata) => {
@@ -191,8 +191,8 @@ export function useWasslah() {
       const id = `send-${file.name}-${Date.now()}`;
       addTransfer(id, file.name, file.size, "send");
 
-      await sendFile(channelRef.current, file, (progress) => {
-        updateProgress(id, progress);
+      await sendFile(channelRef.current, file, (progress, transferred) => {
+        updateProgress(id, progress, transferred);
       });
 
       completeTransfer(id);

@@ -28,7 +28,7 @@ export async function sendFile(channel, file, onProgress) {
     sentChunks++;
 
     const progress = Math.round((sentChunks / totalChunks) * 99);
-    onProgress?.(progress);
+    onProgress?.(progress, offset + chunk.byteLength);
   }
 
   channel.send(JSON.stringify({ type: "file-end" }));

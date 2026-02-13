@@ -1,5 +1,15 @@
-import {  FaFileImage, FaFileAudio, FaFileVideo, FaFile, FaFileArchive, FaFilePdf, FaFileAlt } from "react-icons/fa";
+import {
+  FaFileImage,
+  FaFileAudio,
+  FaFileVideo,
+  FaFile,
+  FaFileArchive,
+  FaFilePdf,
+  FaFileAlt,
+} from "react-icons/fa";
 import { MdOutlineDone } from "react-icons/md";
+import { formatBytes } from "../utils/formaters";
+
 export function TransferCard({ transfer }) {
   const isComplete = transfer.status === "completed";
   const icon = (() => {
@@ -28,7 +38,12 @@ export function TransferCard({ transfer }) {
         </div>
         <div className="mr-3">
           <h3 className="font-semibold text-sm">{transfer.name}</h3>
-          <p className="font-normal text-text-secondary text-sm">{transfer.size}</p>
+          <p className="font-normal text-secondary text-xs">
+            {isComplete
+              ? formatBytes(transfer.size)
+              : formatBytes(transfer.transferred)}{" "}
+            من أصل {formatBytes(transfer.size)}
+          </p>
         </div>
         <div
           className={`mr-auto ${isComplete ? "text-success" : "text-text-secondary"}`}
@@ -38,7 +53,9 @@ export function TransferCard({ transfer }) {
               <p className="font-bold text-sm text-primary text-left">
                 {transfer.progress}%
               </p>
-              <p className="font-normal text-text-muted text-sm">متبقي 5 ثواني</p>
+              <p className="font-normal text-text-muted text-sm">
+                جاري {transfer.direction === "send" ? "الإرسال" : "الاستقبال"}
+              </p>
             </>
           ) : (
             <MdOutlineDone size={20} />

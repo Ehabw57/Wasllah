@@ -12,18 +12,18 @@ export function TransferPage({
   const completedTransfers = transfers.filter((t) => t.status === "completed");
 
   return (
-    <div className="max-w-2xl mx-auto">
+    <div className="max-w-full mx-auto">
       {/* Connection Status */}
-      <div className="bg-success-light border border-success rounded-xl p-4 mb-6 flex items-center justify-between">
+      <div className="bg-primary-light border border-primary rounded-xl p-4 mb-6 flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <span className="w-3 h-3 bg-success rounded-full animate-pulse" />
-          <span className="text-success">
+          <span className="w-3 h-3 bg-primary rounded-full animate-pulse" />
+          <span className="text-primary">
             متصل بـ {connectedDevice?.name}
           </span>
         </div>
         <button
           onClick={onDisconnect}
-          className="text-danger hover:text-danger text-sm"
+          className="text-danger hover:text-red-600 text-sm"
         >
           قطع الاتصال
         </button>
