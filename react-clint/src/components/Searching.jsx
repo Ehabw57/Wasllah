@@ -15,7 +15,7 @@ export default function Searching({ className }) {
       <h3 className="text-lg font-bold text-gray-800 mt-4">
         جاري البحث عن الأجهزة...
       </h3>
-      <p className="text-gray-400 w-110 text-md text-center">
+      <p className="text-gray-400 max-w-110 text-md text-center">
         تأكد من أن الأجهزة الأخري متصلة بنفس الشبكة المحلية ومفمتوحه علي
         التطبيق.
       </p>

@@ -1,6 +1,7 @@
 import { FaMobileAlt, FaDesktop } from "react-icons/fa";
 import { MdOutlineDevices } from "react-icons/md";
 
+
 export default function DeviceList({ devices = [], onConnect }) {
   return (
     <>
@@ -35,28 +36,30 @@ export default function DeviceList({ devices = [], onConnect }) {
 }
 
 function DeviceCard({ device, onConnect }) {
-  switch (device.platform) {
+  let icon;
+  let platform = device.name.split(" - ")[0];
+  switch (platform) {
     case "Android":
     case "iOS":
-      device.icon = <FaMobileAlt size={20} className="text-gray-500" />;
+      icon = <FaMobileAlt size={20} className="text-gray-500" />;
       break;
     case "Windows":
     case "macOS":
     case "Linux":
-      device.icon = <FaDesktop size={20} className="text-gray-500" />;
+      icon = <FaDesktop size={20} className="text-gray-500" />;
       break;
     default:
-      device.icon = <MdOutlineDevices size={20} className="text-gray-500" />;
+      icon = <MdOutlineDevices size={20} className="text-gray-500" />;
   }
   return (
     <div className=" bg-white rounded-3xl px-4 py-6 shadow-sm flex items-center justify-start">
       <div className="w-15 h-15 bg-gray-100 rounded-lg flex items-center justify-center">
-        {device.icon}
+        {icon}
       </div>
       <div className="mr-4">
         <h4 className="text-md font-bold text-gray-800">{device.name}</h4>
         <span className="text-xs text-green-600 py-1 ">
-          {`جهاز ${device.platform ? device.platform : "غير معروف"}`}
+          {`جهاز ${platform ? platform : "غير معروف"}`}
         </span>
       </div>
 
