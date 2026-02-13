@@ -26,16 +26,16 @@ export function FileInput({ onFile, disabled=false }) {
       className={`
         block border-3 border-dashed rounded-2xl p-8 text-center cursor-pointer
         transition-colors
-        ${isDragging ? 'border-blue-500 bg-blue-50' : 'border-gray-300 hover:border-blue-400'}
+        ${isDragging ? 'border-primary bg-primary-light' : 'border-neutral-300 hover:border-primary'}
         ${disabled ? 'opacity-50 cursor-not-allowed' : ''}
       `}
       onDragOver={(e) => { e.preventDefault(); setIsDragging(true); }}
       onDragLeave={() => setIsDragging(false)}
       onDrop={handleDrop}
     >
-      <FaCloudUploadAlt size={40} className='text-gray-400 mx-auto mb-2'/ >
-      <p className="text-lg font-medium text-black">اسحب الملفات هنا</p>
-      <p className="text-sm text-gray-500">أو اضغط لاختيار ملفات من الجهاز</p>
+      <FaCloudUploadAlt size={40} className='text-neutral-400 mx-auto mb-2'/ >
+      <p className="text-lg font-medium text-text-primary">اسحب الملفات هنا</p>
+      <p className="text-sm text-text-secondary">أو اضغط لاختيار ملفات من الجهاز</p>
       
       <input
         type="file"

@@ -14,16 +14,16 @@ export function TransferPage({
   return (
     <div className="max-w-2xl mx-auto">
       {/* Connection Status */}
-      <div className="bg-green-50 border border-green-200 rounded-xl p-4 mb-6 flex items-center justify-between">
+      <div className="bg-success-light border border-success rounded-xl p-4 mb-6 flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <span className="w-3 h-3 bg-green-500 rounded-full animate-pulse" />
-          <span className="text-green-700">
+          <span className="w-3 h-3 bg-success rounded-full animate-pulse" />
+          <span className="text-success">
             متصل بـ {connectedDevice?.name}
           </span>
         </div>
         <button
           onClick={onDisconnect}
-          className="text-red-500 hover:text-red-600 text-sm"
+          className="text-danger hover:text-danger text-sm"
         >
           قطع الاتصال
         </button>
@@ -34,14 +34,14 @@ export function TransferPage({
       {activeTransfers.length > 0 && (
         <div className="mt-6">
           <div className="flex items-center justify-between">
-            <h3 className="font-semibold text-gray-800 mb-3">النقل الجاري</h3>
+            <h3 className="font-semibold text-text-primary mb-3">النقل الجاري</h3>
             <div className="space-x-3">
-              <button className="text-sm text-blue-800 bg-blue-100 px-3 py-.5 rounded-lg">
+              <button className="text-sm text-primary bg-primary-light px-3 py-.5 rounded-lg">
                 إلغاء الجميع
               </button>
               <button
                 onClick={onClearCompleted}
-                className="text-sm text-gray-400 hover:text-gray-600"
+                className="text-sm text-text-muted hover:text-text-secondary"
               >
                 مسح المكتمل
               </button>

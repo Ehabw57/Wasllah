@@ -7,7 +7,7 @@ const wasslah = useWasslah();
 console.log('APP RERENDERD :')
   
   return (
-    <div className="min-h-screen bg-gray-50 py-2 px-4 md:px-6 lg:px-15 xl:px-30" dir="rtl">
+    <div className="min-h-screen bg-background py-2 px-4 md:px-6 lg:px-15 xl:px-30" dir="rtl">
       {wasslah.status === 'discovering' ? (
         <DiscoveryPage
           devices={wasslah.devices}
